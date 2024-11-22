@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">CRUD User Dashboard</h2>
+
+        <!-- Search bar -->
+        <div class="mb-3">
+            <input type="text" class="form-control" id="search-input" placeholder="Search by username, email, or role" oninput="filterUsers()">
+        </div>
+
+        <!-- Form for Add/Edit User -->
+        <div id="form-container">
+            <form id="crud-form">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <input type="text" class="form-control" id="role" placeholder="Enter role" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-button">Add User</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <!-- Display Users in a Table -->
+        <h3>Users List</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="users-table">
+                <!-- Users will be listed here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for Viewing User Details -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewModalLabel">View User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <strong>Username: </strong><span id="view-username"></span><br>
+                    <strong>Email: </strong><span id="view-email"></span><br>
+                    <strong>Role: </strong><span id="view-role"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to the form and users list
+        const form = document.getElementById("crud-form");
+        const usersTable = document.getElementById("users-table");
+        const usernameInput = document.getElementById("username");
+        const emailInput = document.getElementById("email");
+        const roleInput = document.getElementById("role");
+        const submitButton = document.getElementById("submit-button");
+        const searchInput = document.getElementById("search-input");
+
+        let editIndex = null; // Keeps track of the user being edited
+
+        // Create an empty array to hold our users
+        let users = [];
+
+        // Function to render the user table
+        function renderUsers() {
+            usersTable.innerHTML = "";
+            users.forEach((user, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm me-2" onclick="viewUser(${index})">View</button>
+                        <button class="btn btn-warning btn-sm me-2" onclick="editUser(${index})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${index})">Delete</button>
+                    </td>
+                `;
+                usersTable.appendChild(row);
+            });
+        }
+
+        // Function to filter users based on search input
+        function filterUsers() {
+            const query = searchInput.value.toLowerCase();
+            const filteredUsers = users.filter(user =>
+                user.username.toLowerCase().includes(query) ||
+                user.email.toLowerCase().includes(query) ||
+                user.role.toLowerCase().includes(query)
+            );
+            renderFilteredUsers(filteredUsers);
+        }
+
+        // Render filtered users after search
+        function renderFilteredUsers(filteredUsers) {
+            usersTable.innerHTML = "";
+            filteredUsers.forEach((user, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm me-2" onclick="viewUser(${index})">View</button>
+                        <button class="btn btn-warning btn-sm me-2" onclick="editUser(${index})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${index})">Delete</button>
+                    </td>
+                `;
+                usersTable.appendChild(row);
+            });
+        }
+
+        // Handle form submission (Create and Update)
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const email = emailInput.value.trim();
+            const role = roleInput.value.trim();
+
+            if (editIndex !== null) {
+                // Update user
+                users[editIndex] = { username, email, role };
+                editIndex = null;
+                submitButton.innerText = "Add User";
+            } else {
+                // Create new user
+                users.push({ username, email, role });
+            }
+
+            // Reset form
+            usernameInput.value = "";
+            emailInput.value = "";
+            roleInput.value = "";
+
+            renderUsers();
+        });
+
+        // Edit user
+        function editUser(index) {
+            const user = users[index];
+            usernameInput.value = user.username;
+            emailInput.value = user.email;
+            roleInput.value = user.role;
+            editIndex = index;
+            submitButton.innerText = "Update User";
+        }
+
+        // Delete user
+        function deleteUser(index) {
+            users.splice(index, 1);
+            renderUsers();
+        }
+
+        // View user details in the modal
+        function viewUser(index) {
+            const user = users[index];
+            document.getElementById("view-username").innerText = user.username;
+            document.getElementById("view-email").innerText = user.email;
+            document.getElementById("view-role").innerText = user.role;
+
+            // Show the modal
+            const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+            viewModal.show();
+        }
+
+        // Initial render
+        renderUsers();
+    </script>
+</body>
+</html>

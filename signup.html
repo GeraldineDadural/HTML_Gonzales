@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* General Body Styles */
+        body {
+            background-color: #f8f9fa; /* Light Gray */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Sign Up Container Styles */
+        .signup-container {
+            max-width: 500px; /* Increased width for a wider layout */
+            width: 100%; /* Ensure it adapts to smaller screens */
+            padding: 30px; /* Increased padding for better spacing */
+            border: 10px solid yellow; /* Yellow Border */
+            border-radius: 10px;
+            background-color: rgb(45, 54, 1); /* White Background */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
+        }
+
+        /* Sign Up Header Styles */
+        .signup-header {
+            background-color: royalblue; /* Blue Header */
+            color: white;
+            margin-top: -4%;
+            text-align: center;
+            padding: 12px; /* Adjusted padding for better look */
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 5%;
+            position: relative;
+        }
+
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            cursor: pointer;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* Form Elements */
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            padding: 12px; /* Increased padding for a modern feel */
+            font-size: 16px;
+        }
+
+        /* Form Buttons */
+        button {
+            font-size: 18px; /* Slightly larger font for buttons */
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Sign Up Button */
+        .btn-success {
+            background-color: #32cd32;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-header">
+            <span class="close-btn" onclick="confirmExit()">X</span>
+            <h2>SIGN UP</h2>
+        </div>
+        <form id="signupForm">
+            <div class="mb-4 input-group">
+                <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+            </div>
+            <div class="mb-4 input-group">
+                <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+            </div>
+            <div class="mb-4 input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+            </div>
+            <div class="mb-4 input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" required>
+            </div>
+            <button type="button" class="btn btn-success w-100" onclick="signUp()">Sign Up</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.js"></script>
+    <script>
+        function signUp() {
+            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            // Simulated sign up process (replace with actual back-end call)
+            alert("Sign up successful!");
+            // Redirect to login page after successful sign up (optional)
+            window.location.href = "login.html";
+        }
+
+        function confirmExit() {
+            if (confirm("Are you sure you want to exit?")) {
+                alert("Closing form...");
+            }
+        }
+    </script>
+</body>
+</html>
